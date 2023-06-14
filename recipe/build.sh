@@ -34,23 +34,25 @@ export USE_OPENMP=y
 echo "USE_OPENMP is equal to " $USE_OPENMP
 build_arch=$(echo $CONDA_TOOLCHAIN_HOST | cut -d - -f 1)
 echo "build_arch is $build_arch"
-export NWCHEM_MODULES="all python gwmol xtb"
+#export NWCHEM_MODULES="all python gwmol xtb"
 # required for xtb module
-export USE_TBLITE=1
+#export USE_TBLITE=1
 #faster build
-#export NWCHEM_MODULES="nwdft driver solvation xtb python"
+export NWCHEM_MODULES="nwdft driver solvation python tce property vib"
 export USE_NOIO=Y
 # disable native CPU optimizations
 export USE_HWOPT=n
 
-export BLASOPT="-L$PREFIX/lib -lopenblas -lpthread"
-export BLAS_SIZE=4
+#export BLASOPT="-L$PREFIX/lib -lopenblas -lpthread"
+export BLAS_SIZE=8
 export USE_64TO32=y
 
-export LAPACK_LIB="$BLASOPT"
+#export LAPACK_LIB="$BLASOPT"
+export BUILD_OPENBLAS=1
 
-export SCALAPACK_SIZE=4
-export SCALAPACK_LIB="-L$PREFIX/lib -lscalapack"
+export SCALAPACK_SIZE=8
+export BUILD_SCALAPACK=1
+#export SCALAPACK_LIB="-L$PREFIX/lib -lscalapack"
 
 export LIBXC_INCLUDE="$PREFIX/include"
 export LIBXC_LIB="$PREFIX/lib"
@@ -59,11 +61,13 @@ if [[ "$build_arch" == "x86_64" ]]; then
     export BUILD_PLUMED=1
 fi
 # https://github.com/simint-chem/simint-generator
-export USE_SIMINT=1
-export SIMINT_MAXAM=5
+#export USE_SIMINT=1
+#export SIMINT_MAXAM=5
 if [[ "$build_arch" == "x86_64" ]]; then
+    export FORCETARGET=" TARGET=HASWELL "
     export SIMINT_VECTOR=AVX2
 elif [[ "$build_arch" == "arm64" ]]; then
+    export FORCETARGET=" TARGET=ARMV8 "
     export SIMINT_VECTOR=scalar
 else
     export SIMINT_VECTOR=scalar
@@ -87,6 +91,8 @@ fi
 make CC=${CC} _CC=${_CC} FC=${FC} _FC=${_FC}  DEPEND_CC=${CC_FOR_BUILD} nwchem_config
 cat ${SRC_DIR}/src/config/nwchem_config.h
 #make DEPEND_CC=${CC_FOR_BUILD} CC=${CC} _CC=${CC} 64_to_32 
+#make DEPEND_CC=${CC_FOR_BUILD} CC=${CC} _CC=${CC} 32_to_64
+unset USE_64TO32
 export USE_FPICF=1
 mkdir -p ${SRC_DIR}/tools/install/lib ${SRC_DIR}/tools/install/include || true
 make DEPEND_CC=${CC_FOR_BUILD} CC=${CC} _CC=${_CC} FC=${FC} _FC=${_FC} CFLAGS_FORGA="-fPIC -Wl,-rpath,${PREFIX}/lib -L${PREFIX}/lib" FFLAGS_FORGA="-Wl,-rpath,${PREFIX}/lib -L${PREFIX}/lib" FFLAG_INT="-fdefault-integer-8"  _CPU=${build_arch}

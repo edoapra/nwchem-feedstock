@@ -19,17 +19,14 @@ package:
   version: {{ version }}
 
 source:
-  url: https://github.com/nwchemgit/nwchem/releases/download/v{{ version }}-release/nwchem-{{ version }}-release.revision-{{ hash }}-src.{{ date }}.tar.bz2
-  sha256: f756073ab3206571a22ec26cc95dac674fed9c4c959f444b8a97df059ffa3456
+#  url: https://github.com/nwchemgit/nwchem/releases/download/v{{ version }}-release/nwchem-{{ version }}-release.revision-{{ hash }}-src.{{ date }}.tar.bz2
+#  sha256: f756073ab3206571a22ec26cc95dac674fed9c4c959f444b8a97df059ffa3456
+  url: https://github.com/nwchemgit/nwchem/archive/hotfix/release-7-2-0.tar.gz
+  sha256: fa6a836f4b38bf784767ed6ed53fd23142a8795a7117ee12ae290135490a8d5d
   patches:
-    - ibo32_source.patch
-    - strip_compiler.patch
-    - build_simint.patch
     - earlyexit.patch
     - qalargemem.patch
-    - tblite.patch
     - conda_nwchemrc.patch
-    - plumed.patch
   
 build:
   number: {{ build }} 
@@ -57,7 +54,7 @@ requirements:
     - openblas
     - scalapack
     - python
-    - libxc
+    - libxc =*=*cpu*
     - openssh
     - plumed  # [not (linux64 or osx)]
     - libgomp  # [linux]
