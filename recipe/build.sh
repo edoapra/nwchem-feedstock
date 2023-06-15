@@ -34,11 +34,11 @@ export USE_OPENMP=y
 echo "USE_OPENMP is equal to " $USE_OPENMP
 build_arch=$(echo $CONDA_TOOLCHAIN_HOST | cut -d - -f 1)
 echo "build_arch is $build_arch"
-#export NWCHEM_MODULES="all python gwmol xtb"
+export NWCHEM_MODULES="all python gwmol xtb"
 # required for xtb module
-#export USE_TBLITE=1
+export USE_TBLITE=1
 #faster build
-export NWCHEM_MODULES="nwdft driver solvation python tce property vib"
+#export NWCHEM_MODULES="nwdft driver solvation python tce property vib"
 export USE_NOIO=Y
 # disable native CPU optimizations
 export USE_HWOPT=n
